@@ -1,8 +1,24 @@
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
 def Beta0(X,Y):
     model = LinearRegression() # 构建线性模型
     model.fit(X, Y) # 自变量在前，因变量在后
     beta0 = model.coef_ # 斜率
-    return beta0
+    intercept0 = model.intercept_
+    return beta0,intercept0
+
+'''
+fit_intercept：默认True，是否计算模型的截距，为False时，则数据中心化处理
+normalize：默认False，是否中心化，或者使用sklearn.preprocessing.StandardScaler()
+copy_X：默认True，否则X会被改写
+n_jobs：默认为1，表示使用CPU的个数。当-1时，代表使用全部CPU
+
+coef_：训练后的输入端模型系数，如果label有两个，即y值有两列。那么是一个2D的array
+intercept_：截距
+predict(x)：预测数据
+score：评估
+'''
 
 def normal(x,theta):
     mu=theta[0]
