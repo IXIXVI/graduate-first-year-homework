@@ -1,12 +1,22 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-def Beta0(X,Y):
+
+
+
+def Beta1(X,Y):
     model = LinearRegression() # 构建线性模型
     model.fit(X, Y) # 自变量在前，因变量在后
     beta0 = model.coef_ # 斜率
     intercept0 = model.intercept_
     return beta0,intercept0
+
+
+def Beta0(X,Y):
+    model = LinearRegression() # 构建线性模型
+    model.fit(X, Y) # 自变量在前，因变量在后
+    beta0 = model.coef_ # 斜率
+    return beta0
 
 '''
 fit_intercept：默认True，是否计算模型的截距，为False时，则数据中心化处理
@@ -88,27 +98,29 @@ def pl0(Xs,Y,beta,theta):
 
 
 
-def iterECM(Xs,Y,theta0,N=100,stopbyN= False,ε=0.0005,stopbyL=False):
+def iterECM(Xs,Y,theta0,N=100,stopbyN= False,stopbyL=False,ε=0.0005):
     beta0=Beta0(Xs,Y)
     T0=[beta0,theta0]
     exitflag=False
-    
+    M=theta0.shape[1]
+
     if stopbyN == True:
         for k in range(N):
             a=T0
             T0=ECM(Xs,Y,T0[0],T0[1])
 
-    if stopbyL==True:
-        for l in range(N):
-            l0=pl0(Xs,Y,T0[0],T0[0])
+
+    elif stopbyL==True:
+        for s in range(N):
+            al0=pl0(Xs,Y,T0[0],T0[0])
             T0=ECM(Xs,Y,T0[0],T0[1])
-            l1=pl0(Xs,Y,T0[0],T0[0])
-            a=np.abs(l1-l0)
+            al1=pl0(Xs,Y,T0[0],T0[0])
+            a=np.abs(al1-al0)
             if a<=ε:
                 break
 
     else:
-        for l in range(N):
+        for p in range(N):
             if exitflag == True:
                 break
             a=T0
@@ -123,4 +135,4 @@ def iterECM(Xs,Y,theta0,N=100,stopbyN= False,ε=0.0005,stopbyL=False):
                     if b<= ε:
                         exitflag = True
 
-    return T0,l
+    return T0
