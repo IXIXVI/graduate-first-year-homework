@@ -1,0 +1,5 @@
+y<-read.csv("C:\\Users\\Administrator\\Desktop\\test\\SUBGROUP论文\\heart test\\fitY.csv",header=F)
+cleveland<-read.csv("C:\\Users\\Administrator\\Desktop\\test\\SUBGROUP论文\\heart test\\6cleveland.csv",header=T)
+cl<-cbind(cleveland,y)
+myfit<-lm(V1~.,cl)
+summary(myfit)
