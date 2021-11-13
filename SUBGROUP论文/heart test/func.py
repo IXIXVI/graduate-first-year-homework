@@ -2,8 +2,6 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 
 
-
-
 def Beta1(X,Y):
     model = LinearRegression() # 构建线性模型
     model.fit(X, Y) # 自变量在前，因变量在后
@@ -17,6 +15,7 @@ def Beta0(X,Y):
     model.fit(X, Y) # 自变量在前，因变量在后
     beta0 = model.coef_ # 斜率
     return beta0
+
 
 '''
 fit_intercept：默认True，是否计算模型的截距，为False时，则数据中心化处理
@@ -109,7 +108,6 @@ def iterECM(Xs,Y,theta0,N=100,stopbyN= False,stopbyL=False,ε=0.0005):
             a=T0
             T0=ECM(Xs,Y,T0[0],T0[1])
 
-
     elif stopbyL==True:
         for s in range(N):
             al0=pl0(Xs,Y,T0[0],T0[0])
@@ -136,3 +134,30 @@ def iterECM(Xs,Y,theta0,N=100,stopbyN= False,stopbyL=False,ε=0.0005):
                         exitflag = True
 
     return T0
+
+
+def EM(X,theta):
+    num=X.shape[0]
+    K=theta.shape[1]
+    Ga=np.zeros((num,K))
+    c=np.zeros(K)
+    d=np.zeros(K)
+    thetanext=np.zeros((3,K))
+    for j in range(num):
+        for k in range(K):
+            c[k]=theta[0][k]*normal(X[j],theta[1:,k])
+        Ga[j]=c/np.sum(c)
+
+    for k in range(K):
+        d[k]=np.sum(Ga[:,k])
+        thetanext[0,k]=d[k]/num
+        thetanext[1,k]=np.dot(Ga[:,k],X[:])/d[k]
+        thetanext[2,k]=np.sqrt((np.dot(Ga[:,k],(X[:]-thetanext[1,k])**2))/(d[k]))#标准差
+
+    return thetanext
+
+
+def iterEM(Xs,theta0,N=100):
+    for k in range(N):
+        theta0=EM(Xs,theta0)
+    return theta0
